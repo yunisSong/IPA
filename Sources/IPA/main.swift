@@ -12,20 +12,24 @@ import Smart
  
  */
 let cli = CommandLineKit.CommandLine()
-let file = BoolOption(shortFlag: "f", longFlag: "file",
-                      helpMessage: "脚本路径")
+
+
+let file = StringOption(shortFlag: "f", longFlag: "file",
+                        helpMessage: "脚本路径")
+
+
+let updateName = StringOption(shortFlag: "n", longFlag: "name",
+                              helpMessage: "提交到蒲公英的名称信息")
+let updateDescription = StringOption(shortFlag: "d", longFlag: "description",
+                                     helpMessage: "提交到蒲公英的信息")
+
+let ipaType = StringOption(shortFlag: "t", longFlag: "type",
+                           helpMessage: "选择打包脚本")
 
 let help = BoolOption(shortFlag: "h", longFlag: "help",
                       helpMessage: "这是一个提高打包效率的工具 ")
 
-let updateDescription = StringOption(shortFlag: "d", longFlag: "description",
-                              helpMessage: "提交到蒲公英的信息")
-
-let ipaType = StringOption(shortFlag: "t", longFlag: "type",
-                                     helpMessage: "选择打包脚本")
-
-
-cli.addOptions(help, updateDescription, ipaType)
+cli.addOptions(help,file,updateName, updateDescription, ipaType)
 
 cli.formatOutput = { s, type in
     var str: String
@@ -51,11 +55,12 @@ do {
     exit(EX_USAGE)
 }
 
-let blogPostPath = updateDescription.value ?? ""
+let ipaName = updateName.value ?? "测试版"
+let blogPostPath = file.value ?? ""
 let ipaTypeStr = ipaType.value ?? ""
 let updateDescriptionStr = updateDescription.value ?? ""
 
-var ipaHelp = SmartIPATool.init(shellFile: blogPostPath, ipaShellName: ipaTypeStr, updateDescription: updateDescriptionStr);
+var ipaHelp = SmartIPATool.init(shellFile: blogPostPath, ipaShellName: ipaTypeStr, updateDescription: updateDescriptionStr,updateName:ipaName);
 ipaHelp.creatIPA()
 
 
